@@ -67,6 +67,30 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isAdmin = context.select<AuthProvider, bool>(
+        (auth) => auth.currentUser?.isAdmin ?? false);
+
+    if (!isAdmin) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Relatório Financeiro'),
+          centerTitle: true,
+          actions: [
+            settingsAppBarAction(context),
+          ],
+        ),
+        body: const Center(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Text(
+              'Acesso permitido apenas para admin (Pastor).',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Relatório Financeiro'),
@@ -385,7 +409,9 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Redefinir dados'),
-        content: const Text('Deseja limpar todos os campos deste mês/ano?'),
+        content: const Text(
+          'Deseja limpar todos os campos desta sessão?\n\nNota: Os dados já salvos continuarão no histórico.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -402,21 +428,16 @@ class _FinancialReportScreenState extends State<FinancialReportScreen> {
     if (confirm != true) return;
     if (!mounted) return;
 
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-    final user = auth.currentUser;
-    final scope = user?.congregationId ?? 'global';
-
-    await _financialService.clearReport(
-      month: _selectedMonth,
-      year: _selectedYear,
-      scope: scope,
-    );
-
+    // Apenas limpa os campos da UI, sem deletar do Firestore
     _applyLoadedData(null);
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Dados redefinidos com sucesso.')),
+      const SnackBar(
+        content: Text(
+          'Campos redefinidos. Os dados salvos anteriormente foram mantidos.',
+        ),
+      ),
     );
   }
 

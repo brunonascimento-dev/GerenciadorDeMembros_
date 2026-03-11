@@ -4,9 +4,8 @@ import '../providers/members_provider.dart';
 import '../providers/auth_provider.dart';
 import '../services/pdf_service.dart';
 import 'attendance_screen.dart';
-import 'financial_report_screen.dart';
+import 'financial_history_screen.dart';
 import 'reports_screen.dart';
-import 'login_screen.dart';
 import '../widgets/settings_app_bar_action.dart';
 
 class SecretaryScreen extends StatelessWidget {
@@ -14,6 +13,9 @@ class SecretaryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isAdmin = context.select<AuthProvider, bool>(
+        (auth) => auth.currentUser?.isAdmin ?? false);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Secretaria'),
@@ -51,65 +53,56 @@ class SecretaryScreen extends StatelessWidget {
               },
             ),
 
-            const SizedBox(height: 15),
+            if (isAdmin) ...[
+              const SizedBox(height: 15),
 
-            // --- BOTÃO 2: CARTA DE MEMBRO ---
-            _buildMenuButton(
-              context,
-              icon: Icons.description,
-              label: 'GERAR CARTA DE MEMBRO',
-              color: Colors.orange.shade700,
-              onTap: () => _showLetterDialog(context),
-            ),
+              // --- BOTÃO 2: CARTA DE MEMBRO ---
+              _buildMenuButton(
+                context,
+                icon: Icons.description,
+                label: 'GERAR CARTA DE MEMBRO',
+                color: Colors.orange.shade700,
+                onTap: () => _showLetterDialog(context),
+              ),
 
-            const SizedBox(height: 15),
+              const SizedBox(height: 15),
 
-            // --- BOTÃO 3: RELATÓRIOS MENSAIS ---
-            _buildMenuButton(
-              context,
-              icon: Icons.picture_as_pdf,
-              label: 'RELATÓRIOS MENSAIS',
-              color: Colors.green.shade700,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ReportsScreen()),
-                );
-              },
-            ),
+              // --- BOTÃO 3: RELATÓRIOS MENSAIS ---
+              _buildMenuButton(
+                context,
+                icon: Icons.picture_as_pdf,
+                label: 'RELATÓRIOS MENSAIS',
+                color: Colors.green.shade700,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ReportsScreen()),
+                  );
+                },
+              ),
 
-            const SizedBox(height: 15),
+              const SizedBox(height: 15),
 
-            // --- BOTÃO 4: RELATÓRIO FINANCEIRO ---
-            _buildMenuButton(
-              context,
-              icon: Icons.request_quote,
-              label: 'RELATÓRIO FINANCEIRO',
-              color: Colors.teal.shade700,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const FinancialReportScreen(),
-                  ),
-                );
-              },
-            ),
+              // --- BOTÃO 4: RELATÓRIO FINANCEIRO ---
+              _buildMenuButton(
+                context,
+                icon: Icons.request_quote,
+                label: 'HISTÓRICO FINANCEIRO',
+                color: Colors.teal.shade700,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const FinancialHistoryScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
 
             const SizedBox(height: 40),
             const Divider(),
-
-            // --- BOTÃO 6: LOGOUT ---
-            _buildMenuButton(
-              context,
-              icon: Icons.exit_to_app,
-              label: 'SAIR DO SISTEMA',
-              color: Colors.red.shade700,
-              onTap: () {
-                _confirmLogout(context);
-              },
-            ),
           ],
         ),
       ),
@@ -210,32 +203,6 @@ class SecretaryScreen extends StatelessWidget {
           );
         });
       },
-    );
-  }
-
-  void _confirmLogout(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text("Sair"),
-        content: const Text("Tem certeza que deseja desconectar?"),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text("Cancelar")),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              Provider.of<AuthProvider>(context, listen: false).logout();
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
-                (route) => false,
-              );
-            },
-            child: const Text("SAIR", style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
     );
   }
 
