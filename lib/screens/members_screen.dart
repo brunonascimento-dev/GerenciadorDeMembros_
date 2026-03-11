@@ -55,7 +55,8 @@ class MembersScreen extends StatelessWidget {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => MemberDetailsScreen(member: member),
+                              builder: (_) =>
+                                  MemberDetailsScreen(member: member),
                             ),
                           );
                         },
