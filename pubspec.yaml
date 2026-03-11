@@ -1,0 +1,40 @@
+name: gerenciador_de_membros
+description: Aplicativo móvel para gestão de membros de igreja.
+publish_to: "none"
+
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_localizations:
+    sdk: flutter
+
+  cloud_firestore: ^5.4.0
+  cloud_functions: ^5.6.0
+  collection: ^1.18.0
+  firebase_auth: ^5.3.0
+  firebase_core: ^3.6.0
+  firebase_storage: ^12.3.0
+  image_picker: ^1.1.2
+  intl: ^0.20.0
+  package_info_plus: ^8.0.2
+  pdf: ^3.11.1
+  printing: ^5.13.4
+  provider: ^6.1.2
+  shared_preferences: ^2.3.2
+  uuid: ^4.5.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
