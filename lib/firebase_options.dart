@@ -15,6 +15,21 @@ import 'package:flutter/foundation.dart'
 /// );
 /// ```
 class DefaultFirebaseOptions {
+  static String _requiredDefine(String key) {
+    const missingValue = '';
+    final value = String.fromEnvironment(key, defaultValue: missingValue);
+
+    if (value == missingValue) {
+      throw UnsupportedError(
+        'Missing Dart define: $key. '
+        'Create firebase_keys.json from firebase_keys.example.json '
+        'and run with --dart-define-from-file=firebase_keys.json.',
+      );
+    }
+
+    return value;
+  }
+
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
       throw UnsupportedError(
@@ -49,21 +64,20 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCKNezlCIGAJ3__lh8a0a13A41RrEUPicw',
+  static final FirebaseOptions android = FirebaseOptions(
+    apiKey: _requiredDefine('FIREBASE_ANDROID_API_KEY'),
     appId: '1:496327021498:android:323b6e5307d197a8c98383',
     messagingSenderId: '496327021498',
     projectId: 'gerenciadorde-membros-fvlnpi',
     storageBucket: 'gerenciadorde-membros-fvlnpi.firebasestorage.app',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD8z3vj66bCr_fsBCHSVhaAT3PEF6MIUcc',
+  static final FirebaseOptions ios = FirebaseOptions(
+    apiKey: _requiredDefine('FIREBASE_IOS_API_KEY'),
     appId: '1:496327021498:ios:33d015a94a8c0630c98383',
     messagingSenderId: '496327021498',
     projectId: 'gerenciadorde-membros-fvlnpi',
     storageBucket: 'gerenciadorde-membros-fvlnpi.firebasestorage.app',
     iosBundleId: 'com.bralves.grmembros',
   );
-
 }
